@@ -98,11 +98,15 @@ export class WorkflowExecutionService {
 		streamingEnabled?: boolean,
 		httpResponse?: Response,
 	) {
-		const { workflowData, startNodes, dirtyNodeNames, triggerToStartFrom, agentRequest } = payload;
+		const {
+			workflowData,
+			startNodes,
+			destinationNode,
+			dirtyNodeNames,
+			triggerToStartFrom,
+			agentRequest,
+		} = payload;
 		let { runData } = payload;
-		const destinationNode = payload.destinationNode
-			? ({ nodeName: payload.destinationNode, mode: 'inclusive' } as const)
-			: undefined;
 		const pinData = workflowData.pinData;
 		let pinnedTrigger = this.selectPinnedActivatorStarter(
 			workflowData,
