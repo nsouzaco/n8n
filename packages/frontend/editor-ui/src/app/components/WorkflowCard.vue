@@ -590,7 +590,7 @@ const tags = computed(
 					<N8nIcon
 						icon="circle-check"
 						color="success"
-						size="large"
+						size="xlarge"
 						:class="$style.publishIndicator"
 					/>
 				</N8nTooltip>
