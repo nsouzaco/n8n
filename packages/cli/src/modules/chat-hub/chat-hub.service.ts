@@ -38,6 +38,7 @@ import {
 	INode,
 	type IBinaryData,
 	createRunExecutionData,
+	WorkflowExecuteMode,
 } from 'n8n-workflow';
 
 import { ActiveExecutions } from '@/active-executions';
@@ -1457,6 +1458,7 @@ export class ChatHubService {
 		previousMessageId: ChatMessageId,
 		model: ChatHubConversationModel,
 		retryOfMessageId: ChatMessageId | null = null,
+		executionMode: WorkflowExecuteMode = 'chat',
 	) {
 		this.logger.debug(
 			`Starting execution of workflow "${workflowData.name}" with ID ${workflowData.id}`,
@@ -1560,6 +1562,7 @@ export class ChatHubService {
 			user,
 			stream,
 			true,
+			executionMode,
 		);
 
 		executionId = execution.executionId;
@@ -1597,6 +1600,10 @@ export class ChatHubService {
 		retryOfMessageId: ChatMessageId | null = null,
 	) {
 		try {
+			// 'n8n' provider executions count towards execution limits and are charged accordingly.
+			// Other providers use integrated execution mode that doesn't count towards limits.
+			const executionMode = model.provider === 'n8n' ? 'chat' : 'integrated';
+
 			await this.executeChatWorkflow(
 				res,
 				user,
@@ -1606,6 +1613,7 @@ export class ChatHubService {
 				previousMessageId,
 				model,
 				retryOfMessageId,
+				executionMode,
 			);
 		} finally {
 			if (model.provider !== 'n8n') {
